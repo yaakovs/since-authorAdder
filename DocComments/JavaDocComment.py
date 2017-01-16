@@ -26,6 +26,7 @@ class JavaDocComment(DocComment):
         except:
             return None
         '''
+        self.DocString = None
         try:
             TillClass = "\n".join(self.FileLines).split("class")[0]
             if(TillClass == "\n".join(self.FileLines)):
@@ -33,31 +34,34 @@ class JavaDocComment(DocComment):
             FromComm = TillClass.split("/**")[-1:]
             if(FromComm[0] == TillClass):
                 return None
+            self.DocString = FromComm[0].split("*/")[0]
             return FromComm[0].split("*/")[0]
         except:
             return None
 
 
+    def hasTODO(self):
+        '''
+        :returns: True if we have a description for class, else False
+        for now - return true always
+        '''
+        return True
 
     def NeedsChange(self):
         """
         @:returns if the file needs to be edited
         """
-        return False
+        if(not self.DocString):
+            return False
+        if("@since" in self.DocString and "@author" in self.DocString and self.hasTODO()):
+            return False
+        return True
 
 
-    def Rewrite(self):
+    def Rewrite(self,Author,Date):
         '''
         @:returns a List of edited code lines
         '''
         return None
 
-
-    def returnEditedFile(self):
-        '''
-        @:returns List of edited code lines or None if no change is needed
-        '''
-        if(not self.NeedsChange()):
-            return None
-        return self.Rewrite()
 

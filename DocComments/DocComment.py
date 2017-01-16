@@ -27,13 +27,13 @@ class DocComment():
     '''
     @:returns a List of edited code lines
     '''
-    def Rewrite(self):
+    def Rewrite(self,Author,Date):
         return None
 
     '''
     @:returns List of edited code lines or None if no change is needed
     '''
-    def returnEditedFile(self):
+    def returnEditedFile(self,Author,Date):
         if(not self.NeedsChange()):
             return None
         return self.Rewrite()
