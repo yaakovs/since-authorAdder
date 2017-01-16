@@ -7,5 +7,5 @@
 
 
 # Keep this list alphabetically sorted, on vim: +,$!sort -u
-Yaakov Sokolik <yaakovsoki [at] gmail.com>
 Raviv Rachmiel <raviv.rachmiel [at] gmail.com>
+Yaakov Sokolik <yaakovsoki [at] gmail.com>
