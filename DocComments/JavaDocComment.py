@@ -5,7 +5,6 @@
 '''
 
 import re
-
 from DocComments.DocComment import DocComment
 
 
