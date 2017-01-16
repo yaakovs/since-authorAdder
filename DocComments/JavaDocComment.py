@@ -18,7 +18,7 @@ class JavaDocComment(DocComment):
             @:returns the docComment as a string, or None if such doesnt exist
             TODO: do it better
         '''
-        comment = re.compile(r'/\*\*(.*?)\*/', re.DOTALL)
+        comment = re.compile(r'/\*\*(.*?)\*/[^\*\*]*class', re.DOTALL)
         try:
             return comment.findall("\n".join(self.FileLines))[-1:][0]
         except:
@@ -66,12 +66,20 @@ class JavaDocComment(DocComment):
         TODONote = "TODO: " + Author + " please add a description to your class"
         if(not self.NeedsChange()):
             return None
+        if (not self.hasTODO()):
+            self.DocString = TODONote + "\n" + self.DocString
+        if ("@since" not in self.DocString):
+            self.DocString = since + "\n" + self.DocString
         if("@author" not in self.DocString):
-            self.DocString + "\n" + author + "\n"
-        if("@since" not in self.DocString):
-            self.DocString + "\n" + since + "\n"
-        if(not self.hasTODO()):
-            self.DocString + "\n" + TODONote + "\n"
+            self.DocString = author + "\n" + self.DocString
+        comment = re.compile(r'/\*\*(.*?)\*/.*class', re.DOTALL)
+        try:
+            return comment.sub(self.DocString,"\n".join(self.FileLines)).split("\n")
+        except:
+            return None
+
+
+
 
 
 

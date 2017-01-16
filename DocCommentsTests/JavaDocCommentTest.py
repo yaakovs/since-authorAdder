@@ -29,6 +29,12 @@ class JavaDocCommentTest(unittest.TestCase):
         self.assertEqual(None, JavaDocComment([str, str2]).getDocComment())
 
 
+    def test_noClassHasDoc(self):
+        str = "/** hello world */ "
+        str2 = "public static"
+        self.assertEqual(None, JavaDocComment([str, str2]).getDocComment())
+
+
 if __name__ == '__main__':
     unittest.main()
 
