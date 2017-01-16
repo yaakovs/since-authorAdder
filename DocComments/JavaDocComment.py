@@ -16,8 +16,9 @@ class JavaDocComment(DocComment):
     def getDocComment(self):
         '''
             @:returns the docComment as a string, or None if such doesnt exist
+            TODO: do it better
         '''
-
+        '''
         JavaDocPattern = r'/\*\*((?:.|\n)*?)\*/.*class'
         comment = re.compile(JavaDocPattern,re.MULTILINE)
         try:
@@ -27,13 +28,15 @@ class JavaDocComment(DocComment):
         '''
         try:
             TillClass = "\n".join(self.FileLines).split("class")[0]
-            print(TillClass)
+            if(TillClass == "\n".join(self.FileLines)):
+                return None
             FromComm = TillClass.split("/**")[-1:]
-            print(FromComm)
+            if(FromComm[0] == TillClass):
+                return None
             return FromComm[0].split("*/")[0]
         except:
             return None
-'''
+
 
 
     def NeedsChange(self):
