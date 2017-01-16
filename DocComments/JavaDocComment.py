@@ -62,12 +62,17 @@ class JavaDocComment(DocComment):
         '''
         @:returns a List of edited code lines
         '''
-        author = "@author "
-        since = "@since "
+        author = "@author " + str(Author)
+        since = "@since " + str(Date)
+        TODONote = "TODO: " + Author + " please add a description to your class"
         if(not self.NeedsChange()):
             return None
-        if("@since" in self.DocString):
-            return True
+        if("@author" not in self.DocString):
+            self.DocString + "\n" + author + "\n"
+        if("@since" not in self.DocString):
+            self.DocString + "\n" + since + "\n"
+        if(not self.hasTODO()):
+            self.DocString + "\n" + TODONote + "\n"
 
 
 
