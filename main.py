@@ -45,10 +45,11 @@ def getCommitInfo(path,filePath):
         for line in stdoutput.split("\n"):
             if ("Date:" in line):
                 FullDate = line.split("Date:")[1].split(" ")
+                #The date formatting we chose
                 since += FullDate[1] + " " + FullDate[2] + ", " + FullDate[4]
             if ("Author:" in line):
                 author += line.split("Author:")[1]
-        print("NEED AUTH OR TODO IN " + filePath + " AND DETAILS ARE - " + author ", " + since)
+        print("NEED AUTH OR TODO IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
         return author, since
 
 
