@@ -8,6 +8,7 @@ from DocComment import DocComment
 import re
 
 class JavaDocComment(DocComment):
+
     """
     a father class for getting the edited code file (with since, author and TODO)
     """
@@ -16,11 +17,23 @@ class JavaDocComment(DocComment):
         '''
             @:returns the docComment as a string, or None if such doesnt exist
         '''
-        JavaDocPattern = r'///*/*(.*)/*// .* class'
-        matchObject = re.match(JavaDocPattern,self.FileLines.join("\n"))
-        if matchObject:
-            return matchObject.group(1) 
-        return None
+
+        JavaDocPattern = r'/\*\*((?:.|\n)*?)\*/.*class'
+        comment = re.compile(JavaDocPattern,re.MULTILINE)
+        try:
+            return comment.findall("\n".join(self.FileLines))[-1:][0]
+        except:
+            return None
+        '''
+        try:
+            TillClass = "\n".join(self.FileLines).split("class")[0]
+            print(TillClass)
+            FromComm = TillClass.split("/**")[-1:]
+            print(FromComm)
+            return FromComm[0].split("*/")[0]
+        except:
+            return None
+'''
 
 
     def NeedsChange(self):
