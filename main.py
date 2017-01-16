@@ -11,8 +11,9 @@ make as plugin
 refactor
 make generic for more langs
 do something with the TODO if missing
-beautify the writing of since and author
-edit the files
+beautify the writing of since and author:
+    edit the files
+    change date format to e.g Oct 19, 2016
 '''
 
 
