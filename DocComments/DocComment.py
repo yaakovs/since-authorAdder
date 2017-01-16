@@ -5,7 +5,11 @@
 
 a father class for getting the edited code file (with since, author and TODO)
 '''
+
+
 class DocComment():
+
+
     '''
     @:param fileLines - list of lines of the code file
     '''
@@ -33,7 +37,7 @@ class DocComment():
     '''
     @:returns List of edited code lines or None if no change is needed
     '''
-    def returnEditedFile(self,Author,Date):
+    def ReturnEditedFile(self, Author, Date):
         if(not self.NeedsChange()):
             return None
         return self.Rewrite()
