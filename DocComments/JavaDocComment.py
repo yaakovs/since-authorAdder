@@ -24,16 +24,7 @@ class JavaDocComment(DocComment):
             return comment.findall("\n".join(self.FileLines))[-1:][0]
         except:
             return None
-        '''
-        try:
-            TillClass = "\n".join(self.FileLines).split("class")[0]
-            print(TillClass)
-            FromComm = TillClass.split("/**")[-1:]
-            print(FromComm)
-            return FromComm[0].split("*/")[0]
-        except:
-            return None
-'''
+
 
 
     def NeedsChange(self):
@@ -47,7 +38,13 @@ class JavaDocComment(DocComment):
         '''
         @:returns a List of edited code lines
         '''
-        return None
+        author = "@author "
+        since = "@since "
+        if(not self.NeedsChange()):
+            return None
+        if("@since" in self.DocString):
+            return True
+
 
 
     def returnEditedFile(self):
