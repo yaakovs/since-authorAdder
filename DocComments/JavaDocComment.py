@@ -4,7 +4,7 @@
 @since Jan 16, 2017
 '''
 
-from DocComment import DocComment
+from DocComments.DocComment import DocComment
 import re
 
 class JavaDocComment(DocComment):
@@ -18,14 +18,12 @@ class JavaDocComment(DocComment):
             @:returns the docComment as a string, or None if such doesnt exist
             TODO: do it better
         '''
-        '''
-        JavaDocPattern = r'/\*\*((?:.|\n)*?)\*/.*class'
-        comment = re.compile(JavaDocPattern,re.MULTILINE)
+        comment = re.compile(r'/\*\*(.*?)\*/', re.DOTALL)
         try:
             return comment.findall("\n".join(self.FileLines))[-1:][0]
         except:
             return None
-        '''
+        """
         self.DocString = None
         try:
             TillClass = "\n".join(self.FileLines).split("class")[0]
@@ -38,6 +36,7 @@ class JavaDocComment(DocComment):
             return FromComm[0].split("*/")[0]
         except:
             return None
+        """
 
 
     def hasTODO(self):
