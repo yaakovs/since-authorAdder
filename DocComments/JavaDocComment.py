@@ -1,28 +1,29 @@
+'''
+@author Raviv Rachmiel
+@author Yaakov Sokolik
+@since Jan 16, 2017
+'''
+
 from DocComment import DocComment
 import re
 
-
 class JavaDocComment(DocComment):
-    ''''''
     """
-    @author Raviv Rachmiel
-    @author Yaakov Sokolik
-    @since Jan 16, 2017
-
     a father class for getting the edited code file (with since, author and TODO)
     """
 
     def getDocComment(self):
-        ''''''
         '''
             @:returns the docComment as a string, or None if such doesnt exist
         '''
         JavaDocPattern = r'///*/*(.*)/*// .* class'
+        matchObject = re.match(JavaDocPattern,self.FileLines.join("\n"))
+        if matchObject:
+            return matchObject.group(1) 
         return None
 
 
     def NeedsChange(self):
-        '''what the'''
         """
         @:returns if the file needs to be edited
         """
