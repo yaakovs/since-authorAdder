@@ -23,10 +23,23 @@ class DocComment():
         return None
 
     '''
-    @:returns if the file needs to be edited
+    @:returns: the description of the class, if there isn't any returns None
     '''
-    def NeedsChange(self):
-        return False
+    def getDescFromComment(self):
+
+        return None
+    '''
+    @:returns: the author of the class, if there isn't any returns None
+    '''
+    def getAuthorFromComment(self):
+
+        return None
+
+    '''
+    @:returns: the since of the class, if there isn't any returns None
+    '''
+    def getSinceFromComment(self):
+        return None
 
     '''
     @:returns a List of edited code lines
