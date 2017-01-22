@@ -86,4 +86,5 @@ class JavaDocComment(DocComment):
             newDocComment += since
         else:
             newDocComment += "* @since " + str(since) + "\n"
-        return newDocComment.split("\n")
+
+        return "\n".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")
