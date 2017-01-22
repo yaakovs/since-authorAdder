@@ -66,24 +66,24 @@ class JavaDocComment(DocComment):
         '''
         @:returns a List of a suitable docComment
         '''
-        TODONote = "/**TODO: " + Author + " please add a description to your class\n"
-        author = "*@author " + str(Author) + "\n"
-        since = "*@since " + str(Date) + "\n"
+        TODONote = "/** TODO: " + str(Author) + " please add a description to your class\n"
+        author = "* @author " + str(Author) + "\n"
+        since = "* @since " + str(Date) + "\n"
 
         desc = self.getDescFromComment()
         author = self.getAuthorFromComment()
         since = self.getSinceFromComment()
 
         if desc:
-            newDocComment = "/**" + desc
+            newDocComment = "/** " + desc
         else:
             newDocComment = TODONote
         if author:
             newDocComment += author
         else:
-            newDocComment += "*@author " + str(Author) + "\n"
+            newDocComment += "* @author " + str(Author) + "\n"
         if since:
             newDocComment += since
         else:
-            newDocComment += "*@since " + str(since) + "\n"
+            newDocComment += "* @since " + str(since) + "\n"
         return newDocComment.split("\n")
