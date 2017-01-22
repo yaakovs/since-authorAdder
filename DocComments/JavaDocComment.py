@@ -81,9 +81,9 @@ class JavaDocComment(DocComment):
         '''
         @:returns a List of a suitable docComment
         '''
+        if(not self.NeedsChange()):
+            return self.FileLines
         TODONote = "/** TODO: " + str(Author) + " please add a description to your class\n */"
-        author = "* @author " + str(Author) + "\n"
-        since = "* @since " + str(Date) + "\n"
 
         desc = self.getDescFromComment()
         author = self.getAuthorFromComment()
@@ -100,6 +100,6 @@ class JavaDocComment(DocComment):
         if since:
             newDocComment += since
         else:
-            newDocComment += "* @since " + str(since) + "\n"
+            newDocComment += "* @since " + str(Date) + "\n"
 
         return "\n".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")
