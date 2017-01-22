@@ -22,6 +22,12 @@ class DocComment():
     def getDocComment(self):
         return None
 
+    def NeedsChange(self):
+        '''
+        @:returns: True if needs change, else false
+        '''
+        return False
+
     '''
     @:returns: the description of the class, if there isn't any returns None
     '''

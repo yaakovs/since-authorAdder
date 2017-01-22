@@ -49,7 +49,10 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            return "\n".join(filter(lambda line: "@author" in line, docBlock))
+            res = "\n".join(filter(lambda line: "@author" in line, docBlock))
+            if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
+                return None
+            return res
         except:
             return None
 
@@ -60,9 +63,18 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            return "\n".join(filter(lambda line: "@since" in line, docBlock))
+            res = "\n".join(filter(lambda line: "@since" in line, docBlock))
+            if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
+                return None
+            return res
         except:
             return None
+
+    def NeedsChange(self):
+        '''
+        :return: True if needs change and False else
+        '''
+        return not self.getAuthorFromComment() or not self.getSinceFromComment() or not self.getDescFromComment()
 
 
     def Rewrite(self, Author, Date):

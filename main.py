@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 
+from DocComments.DocComment import DocComment
 from DocComments.JavaDocComment import JavaDocComment
 
 '''
@@ -49,7 +50,7 @@ def getCommitInfo(path,filePath):
                 since += FullDate[1] + " " + FullDate[2] + ", " + FullDate[4]
             if ("Author:" in line):
                 author += line.split("Author:")[1]
-        print("NEED AUTH OR TODO IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
+        print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
         return author, since
 
 
@@ -64,6 +65,9 @@ def GetSuitableDocComm(filePath,fileLines):
         return JavaDocComment(fileLines)
     if "JAVA" in fileEnding:
         return JavaDocComment(fileLines)
+    if "Java" in fileEnding:
+        return JavaDocComment(fileLines)
+    return DocComment(fileLines)
     ##TODO: organize in nice switch or something like that
 
 def ChangeFile(path, filePath):
