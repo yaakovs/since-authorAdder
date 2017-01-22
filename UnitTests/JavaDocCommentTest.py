@@ -172,12 +172,13 @@ class JavaDocCommentTest(unittest.TestCase):
         str3 = " * Functions named {@link #base} are non-recursive"
         str6 = " */"
         str7 = "public static class"
-        print(JavaDocComment([str, str2, str3, str6, str7]).Rewrite("Yossi Gil", "2016-08"))
         self.assertEqual(["/**  Expands terms of * or / expressions without reordering. ",
                          " * <p>",
                          " * Functions named {@link #base} are non-recursive",
-                         " * @author Yossi Gil\n",
-                         " * @since 2016-08 */"], JavaDocComment([str, str2, str3, str6, str7]).Rewrite("Yossi Gil","2016-08"))
+                         " * @author Yossi Gil",
+                         " * @since 2016-08",
+                          " */",
+                          "public static class"], JavaDocComment([str, str2, str3, str6, str7]).Rewrite("Yossi Gil","2016-08"))
 
 
 if __name__ == '__main__':
