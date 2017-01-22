@@ -49,5 +49,74 @@ class JavaDocCommentTest(unittest.TestCase):
                          " * @author Niv Shalmon\n"
                          " * @since 2016-08 */", JavaDocComment([str, str2, str3, str4, str5, str6, str7]).getDocComment())
 
+    def test_realCode_getDesc(self):
+        str = "/** Expands terms of * or / expressions without reordering. "
+        str2 = " * <p>"
+        str3 = " * Functions named {@link #base} are non-recursive"
+        str4 = " * @author Yossi Gil"
+        str5 = " * @author Niv Shalmon"
+        str6 = " * @since 2016-08 */"
+        str7 = "public static class"
+        self.assertEqual(" Expands terms of * or / expressions without reordering. \n"
+                         " * <p>\n"
+                         " * Functions named {@link #base} are non-recursive",
+                         JavaDocComment([str, str2, str3, str4, str5, str6, str7]).getDescFromComment())
+
+    def test_realCode_getDesc_None(self):
+        str = "/** "
+        str4 = " * @author Yossi Gil"
+        str5 = " * @author Niv Shalmon"
+        str6 = " * @since 2016-08 */"
+        str7 = "public static class"
+        self.assertEqual(None,
+                         JavaDocComment([str, str4, str5, str6, str7]).getDescFromComment())
+
+    def test_realCode_getAuth(self):
+        str = "/** Expands terms of * or / expressions without reordering. "
+        str2 = " * <p>"
+        str3 = " * Functions named {@link #base} are non-recursive"
+        str4 = " * @author Yossi Gil"
+        str5 = " * @author Niv Shalmon"
+        str6 = " * @since 2016-08 */"
+        str7 = "public static class"
+        self.assertEqual(" * @author Yossi Gil\n"
+                         " * @author Niv Shalmon",
+                         JavaDocComment([str, str2, str3, str4, str5, str6, str7]).getAuthorFromComment())
+
+    def test_realCode_getAuth_SameLine(self):
+        str = "/** Expands terms of * or / expressions without reordering. "
+        str2 = " * <p>"
+        str3 = " * Functions named {@link #base} are non-recursive"
+        str4 = " * @author Yossi Gil @author Niv Shalmon */ "
+        str7 = "public static class"
+        self.assertEqual(" * @author Yossi Gil "
+                         "@author Niv Shalmon ",
+                         JavaDocComment([str, str2, str3, str4, str7]).getAuthorFromComment())
+
+    def test_realCode_getSince(self):
+        str = "/** Expands terms of * or / expressions without reordering. "
+        str2 = " * <p>"
+        str3 = " * Functions named {@link #base} are non-recursive"
+        str4 = " * @author Yossi Gil"
+        str5 = " * @author Niv Shalmon"
+        str6 = " * @since 2016-08 */"
+        str7 = "public static class"
+        self.assertEqual(" * @since 2016-08 ",
+                         JavaDocComment([str, str2, str3, str4, str5, str6, str7]).getSinceFromComment())
+
+    def test_realCode_getSince_SameLine(self):
+        str = "/** Expands terms of * or / expressions without reordering. "
+        str2 = " * <p>"
+        str3 = " * Functions named {@link #base} are non-recursive"
+        str4 = " * @author Yossi Gil @since 2016-08 */ "
+        str7 = "public static class"
+        self.assertEqual("/** Expands terms of * or / expressions without reordering. \n"
+                         " * <p>\n"
+                         " * Functions named {@link #base} are non-recursive\n"
+                         " * @author Yossi Gil\n"
+                         " * @author Niv Shalmon\n"
+                         " * @since 2016-08 */",
+                         JavaDocComment([str, str2, str3, str4, str7]).getDocComment())
+
 if __name__ == '__main__':
     unittest.main()

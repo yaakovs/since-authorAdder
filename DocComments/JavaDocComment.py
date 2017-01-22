@@ -34,8 +34,11 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            return "/n".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
+            res =  "\n".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
                                  docBlock))
+            if(res== '' or res == ' ' or res == '\n'): #TODO: do it better
+                return None
+            return res
         except:
             return None
 
@@ -46,7 +49,7 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            return "/n".join(filter(lambda line: "@author" in line), docBlock)
+            return "\n".join(filter(lambda line: "@author" in line, docBlock))
         except:
             return None
 
@@ -57,7 +60,7 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            return "/n".join(filter(lambda line: "@since" in line), docBlock)
+            return "\n".join(filter(lambda line: "@since" in line, docBlock))
         except:
             return None
 
@@ -66,7 +69,7 @@ class JavaDocComment(DocComment):
         '''
         @:returns a List of a suitable docComment
         '''
-        TODONote = "/** TODO: " + str(Author) + " please add a description to your class\n"
+        TODONote = "/** TODO: " + str(Author) + " please add a description to your class\n */"
         author = "* @author " + str(Author) + "\n"
         since = "* @since " + str(Date) + "\n"
 
