@@ -1,7 +1,8 @@
+import codecs
 import sys
 import os
 import subprocess
-
+import git
 from DocComments.DocComment import DocComment
 from DocComments.JavaDocComment import JavaDocComment
 
@@ -32,30 +33,21 @@ def getCommitInfo(path,filePath):
     returns the Author and Date of the file - when was it created first and by who, according to the
     commit in which it was created
     '''
-    print("HEY")
-    PIPE = subprocess.PIPE
-    process = subprocess.Popen(['git', 'log', '--diff-filter=A', '--summary', filePath], stdout=PIPE, stderr=PIPE, cwd=path)
-    stdoutput, stderroutput = process.communicate()
-    print("BYE")
-    if ('fatal' in stdoutput) or (stderroutput != ''):
-        # Handle error case
-        print("Error")
-    else:
-        # Success
-        author = ""
-        since = ""
-        print(stdoutput)
-        print(stderroutput)
-        for line in stdoutput.split("\n"):
-            if ("Date:" in line):
-                FullDate = line.split("Date:")[1].split(" ")
-                #The date formatting we chose
-                offset = 3
-                since += FullDate[1+offset] + " " + FullDate[2+offset] + ", " + FullDate[4+offset]
-            if ("Author:" in line):
-                author += line.split("Author:")[1]
-        print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
-        return author, since
+    repo = git.Repo(path)
+    log = repo.git.log('--diff-filter=A', '--summary', filePath)
+    author = ""
+    since = ""
+    print(filePath)
+    for line in log.split("\n"):
+        if ("Date:" in line):
+            FullDate = line.split("Date:")[1].split(" ")
+            #The date formatting we chose
+            offset = 3
+            since += FullDate[1+offset] + " " + FullDate[2+offset] + ", " + FullDate[4+offset]
+        if ("Author:" in line):
+            author += line.split("Author:")[1]
+    print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
+    return author, since
 
 
 def GetSuitableDocComm(filePath,fileLines):
@@ -84,25 +76,19 @@ def ChangeFile(path, filePath):
     for a list of supported pl's check __this__ out
     '''
 
-    print("Hello4")
-    f = open(filePath, "r")
-    contents = f.readlines()
-    f.close()
+    with open(filePath, "r", encoding="latin-1") as f:
+        contents = f.readlines()
 
-    print("Hello2")
     DocComm = GetSuitableDocComm(filePath,contents)
-    print("Hello3")
-    if(not DocComm.NeedsChange()):
+    if not DocComm.NeedsChange():
         return
-    print("Hello")
     Author, Date = getCommitInfo(path,filePath)
     contents = DocComm.ReturnEditedFile(Author,Date)
     if(not contents):
         return
-    f = open(filePath, "w")
-    contents2 = "\n".join(contents) #I SUSPECT SOMETHING HERE IS WRONg, also the class regex is not good
-    f.write(contents2)
-    f.close()
+    with open(filePath, "w", encoding="latin-1") as f:
+        contents2 = "".join(contents) #I SUSPECT SOMETHING HERE IS WRONg, also the class regex is not good
+        f.write(contents2)
 
 
 
@@ -114,7 +100,6 @@ def main():
     for root, subdirs, files in os.walk(path):
         #iiterate on files
         for filename in files:
-            print(filename)
             file_path = os.path.join(root, filename)
             ChangeFile(path, file_path)
 

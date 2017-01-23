@@ -14,7 +14,7 @@ class JavaDocComment(DocComment):
     a father class for getting the edited code file (with since, author and TODO)
     """
     #JavaDocRegex = r'/\*\*([^/\*]*?)\*/[^*/]* class'
-    JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^\*/]|[\n])))*\*+/)[^\*]* (Class|class|Interface|interface)+'
+    JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^*/]|[\n])))*\*+/)[^*/]* (class|interface|Interface|Class)+'
 
     def getDocComment(self):
         '''
@@ -22,8 +22,7 @@ class JavaDocComment(DocComment):
         '''
         regexPattern = re.compile(self.JavaDocRegex, re.DOTALL)
         try:
-            print(regexPattern.findall("\n".join(self.FileLines)))
-            return regexPattern.findall("\n".join(self.FileLines))[0][0]
+            return regexPattern.findall("".join(self.FileLines))[0][0]
         except:
             return None
 
@@ -35,14 +34,12 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res =  "\n".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
+            res =  "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
                                  docBlock))
             if(res== '' or res == ' ' or res == '\n'): #TODO: do it better
-                print("DESC")
                 return None
             return res
         except:
-            print("DESC2")
             return None
 
     def getAuthorFromComment(self):
@@ -52,13 +49,11 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res = "\n".join(filter(lambda line: "@author" in line, docBlock))
+            res = "".join(filter(lambda line: "@author" in line, docBlock))
             if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
-                print("AUTH")
                 return None
             return res
         except:
-            print("AUTH2")
             return None
 
     def getSinceFromComment(self):
@@ -68,13 +63,11 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res = "\n".join(filter(lambda line: "@since" in line, docBlock))
+            res = "".join(filter(lambda line: "@since" in line, docBlock))
             if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
-                print("SINCE")
                 return None
             return res
         except:
-            print("SINCE2")
             return None
 
     def NeedsChange(self):
@@ -90,7 +83,7 @@ class JavaDocComment(DocComment):
         '''
         if(not self.NeedsChange()):
             return self.FileLines
-        TODONote = "/** TODO: " + str(Author) + ", please add a description to your class\n"
+        TODONote = "/** TODO: " + str(Author) + " please add a description to your class\n"
 
         desc = self.getDescFromComment()
         author = self.getAuthorFromComment()
@@ -108,16 +101,17 @@ class JavaDocComment(DocComment):
             newDocComment += since
         else:
             newDocComment += " * @since " + str(Date) + "\n"
-        newDocComment += " */"
+        newDocComment += " */\n"
 
         #if no java doc existed
         if(not self.getDocComment()):
             retList = []
             found = False
             for line in self.FileLines:
-                if ("class" or "interface") in line and found == False:
+                if "class" in line and found == False:
                     retList.append(newDocComment)
                     found = True
                 retList.append(line)
-            return "\n".join(retList).split("\n")
-        return "\n".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")
+            return map(lambda line: line + "\n", "".join(retList).split("\n"))
+        res = "".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")
+        return map(lambda line: line + "\n", res)
