@@ -13,121 +13,108 @@ class JavaDocComment(DocComment):
     a father class for getting the edited code file (with since, author and TODO)
     """
     def __init__(self, FileLines):
-        self.needsChange = False
+        self.NeedsChange = False
         self.FileLines = FileLines
-        self.docComment = None
-        self.docLines = None
-        self.initDocComment()
+        self.DocComment = None
+        self.DocLines = None
+        self.init_doc_comment()
 
+    JavaDefines = " class | interface | enum | annotation "
 
-
-    def initDocComment(self):
+    def init_doc_comment(self):
         '''
-        @:inits: the docComment variable as a string, or None if such doesnt exist
+        @:inits the docComment variable as a string, or None if such doesnt exist
         we want to get the last jdoc comment that comes before the first class/interface:
         assuming each file has the word class or interface:
             - get all that comes before the first class/inrterface
             - get all that comes after the last '/**' from what we sliced earlier
             - get all that comes until the first '*/'
         '''
-        TillClassInter = re.split(" class | interface | enum | annotation ","".join(self.FileLines))[0]
+        TillClassInter = re.split(self.JavaDefines, "".join(self.FileLines))[0]
         if TillClassInter == "".join(self.FileLines):
             # no class and interface and enum
             return
-        FromComm = TillClassInter.split("/**")[-1]
-        if FromComm == TillClassInter:
-            #no jdoc
-            self.needsChange = True
+        FromComment = TillClassInter.split("/**")[-1]
+        if FromComment == TillClassInter:
+            #no java doc
+            self.NeedsChange = True
             return
-        self.docComment = FromComm.split("*/")[0]
-        if(self.docComment==FromComm):
-            #an error case
+        self.docComment = FromComment.split("*/")[0]
+        if self.docComment == FromComment:
+            #some error case
             return
         self.docComment = "/**" + self.docComment + "*/"
         self.docLines = self.docComment.split("\n")
-        self.docLines = map(lambda line: line + "\n", self.docLines)
+        self.docLines = list(map(lambda line: line + "\n", self.docLines))
         self.docLines = list(map(lambda line: re.sub(r'/\*\*|\*/', "", line), self.docLines))
-        self.needsChange = not self.getDescFromComment() or not self.getAuthorFromComment() or not self.getSinceFromComment()
+        self.NeedsChange = not self.get_desc_from_comment() or not self.get_author_from_comment() or not self.get_since_from_comment()
 
-    def getDescFromComment(self):
+    def get_desc_from_comment(self):
         '''
         @:returns: the description of the class, if there isn't any returns None
         '''
         try:
             res = "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
                                  self.docLines))
-            if not res:
-                return None
-            return res
+            return res if res else None
         except:
             return None
 
 
-    def getAuthorFromComment(self):
+    def get_author_from_comment(self):
         '''
         @:returns: the author of the class, if there isn't any returns None
         '''
         try:
             res = "".join(filter(lambda line: "@author" in line, self.docLines))
-            if not res:
-                return None
-            return res
+            return res if res else None
         except:
             return None
 
-    def getSinceFromComment(self):
+    def get_since_from_comment(self):
         '''
         @:returns: the since of the class, if there isn't any returns None
         '''
         try:
             res = "".join(filter(lambda line: "@since" in line, self.docLines))
-            if not res:
-                return None
-            return res
+            return res if res else None
         except:
             return None
 
-    def NeedsChange(self):
-        return self.needsChange
+    def needs_change(self):
+        return self.NeedsChange
 
-    def Rewrite(self, Author, Date):
+    def rewrite(self, AuthorFormGit, DateFormGit):
         '''
-        @:returns a List of a suitable docComment
+        @:returns a List of a modified file lines with a suitable java doc comment
         '''
-        if(not self.NeedsChange()):
+        if not self.needs_change():
             return self.FileLines
 
-        desc = self.getDescFromComment()
-        author = self.getAuthorFromComment()
-        since = self.getSinceFromComment()
+        Desc = self.get_desc_from_comment()
+        AuthorFromComment = self.get_author_from_comment()
+        SinceFromComment = self.get_since_from_comment()
 
         TODONote = "/** TODO: "
-        TODONote += author.split("@author")[1] if author else Author
-        TODONote += " please add a description \n" ##TODO: to your class
+        TODONote += AuthorFromComment.split("@author")[1] if AuthorFromComment else AuthorFormGit
+        TODONote += " please add a description\n"
 
-        if desc:
-            newDocComment = "/** " + desc
-        else:
-            newDocComment = TODONote
-        if author:
-            newDocComment += author
-        else:
-            newDocComment += " * @author " + str(Author) + "\n"
-        if since:
-            newDocComment += since
-        else:
-            newDocComment += " * @since " + str(Date) + "\n"
+        #build the new java doc ocmment
+        newDocComment = "/** " + Desc if Desc else TODONote
+        newDocComment += AuthorFromComment if AuthorFromComment else " * @author " + AuthorFormGit + "\n"
+        newDocComment += SinceFromComment if SinceFromComment else " * @since " + DateFormGit + "\n"
         newDocComment += " */\n"
 
         #if no java doc existed
         if not self.docComment:
-            retList = []
+            LinesToRet = []
             found = False
             for line in self.FileLines:
-                if (" class " in line or " interface " in line or " enum " in line or " annotation ") and not found: ##TODO: or enum
-                    retList.append(newDocComment)
+                if (re.match(self.JavaDefines, line)) and not found:
+                    LinesToRet.append(newDocComment)
                     found = True
-                retList.append(line)
-            return list(map(lambda line: line + "\n", "".join(retList).split("\n")))
+                LinesToRet.append(line)
+            return list(map(lambda line: line + "\n", "".join(LinesToRet).split("\n")))
+
         res = "".join(self.FileLines).replace(self.docComment, newDocComment).split("\n")
         return list(map(lambda line: line + "\n", res))

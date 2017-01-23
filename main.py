@@ -1,7 +1,6 @@
-import codecs
+import re
 import sys
 import os
-import subprocess
 import git
 from DocComments.DocComment import DocComment
 from DocComments.JavaDocComment import JavaDocComment
@@ -25,15 +24,15 @@ do something with the TODO if missing
 
 '''
 
-##TODO: remove prints, maybe change to logs
-def getCommitInfo(path,filePath):
+def get_commit_info(path, filePath):
     '''
-
     :param path: The absolute path to root
     :param filePath: the file path
     :return: Author, Date
     returns the Author and Date of the file - when was it created first and by who, according to the
     commit in which it was created
+    note - we could have used the "popen" function of "subprocess" library, but we chose to use the git library and be
+    dependent on it because using libraries in python is the pythonic way, as we have learned in the course
     '''
     repo = git.Repo(path)
     log = repo.git.log('--diff-filter=A', '--summary', filePath)
@@ -46,33 +45,28 @@ def getCommitInfo(path,filePath):
         if ("Date:" in line) and not foundSince:
             FullDate = line.split("Date:")[1].split(" ")
             foundSince = True
-            #The date formatting we chose
+            #The date format we chose
             offset = 3
-            since += FullDate[1+offset] + " " + FullDate[2+offset] + ", " + FullDate[4+offset]
+            since += FullDate[1 + offset] + " " + FullDate[2 + offset] + ", " + FullDate[4 + offset]
         if ("Author:" in line) and not foundAuth:
             author += line.split("Author:")[1]
             foundAuth = True
-    print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
+    print("modifying file:" + filePath + " author from first commit: " + author + ", date of first commit: " + since)
     return author, since
 
 
-def GetSuitableDocComm(filePath,fileLines):
+def get_suitable_doc_comment(filePath, fileLines):
     '''
     :param filePath: the abs path to the file
     :return: a DocComm
     the suitable DocComm for the code file if such exists
     '''
     fileEnding = filePath.split(".")[-1:]
-    if "java" in fileEnding:
-        return JavaDocComment(fileLines)
-    if "JAVA" in fileEnding:
-        return JavaDocComment(fileLines)
-    if "Java" in fileEnding:
+    if re.match("java", fileEnding, re.IGNORECASE):
         return JavaDocComment(fileLines)
     return DocComment(fileLines)
-    ##TODO: organize in nice switch or something like that
 
-def ChangeFile(path, filePath):
+def change_file(path, filePath):
     '''
     :param path: The absolute path to root
     :param filePath: the file path
@@ -81,23 +75,17 @@ def ChangeFile(path, filePath):
     changes the file if needed - if since,author or description needed (only if a supported code file)
     for a list of supported pl's check __this__ out
     '''
-
     with open(filePath, "r", encoding="latin-1") as f:
         contents = f.readlines()
-
-    DocComm = GetSuitableDocComm(filePath,contents)
-    if not DocComm.NeedsChange():
+    DocComm = get_suitable_doc_comment(filePath, contents)
+    if not DocComm.needs_change():
         return
-    Author, Date = getCommitInfo(path,filePath)
-    contents = DocComm.ReturnEditedFile(Author,Date)
-    if(not contents):
+    Author, Date = get_commit_info(path, filePath)
+    Contents = DocComm.return_edited_file(Author, Date)
+    if not contents:
         return
     with open(filePath, "w", encoding="latin-1") as f:
-        contents2 = "".join(contents) #I SUSPECT SOMETHING HERE IS WRONg, also the class regex is not good
-        f.write(contents2)
-
-
-
+        f.write("".join(contents))
 
 
 def main():
@@ -107,10 +95,7 @@ def main():
         #iiterate on files
         for filename in files:
             file_path = os.path.join(root, filename)
-            ChangeFile(path, file_path)
-
-
-
+            change_file(path, file_path)
 
 if __name__ == '__main__':
     main()
