@@ -181,5 +181,19 @@ class JavaDocCommentTest(unittest.TestCase):
                           "public static class"], JavaDocComment([str, str2, str3, str6, str7]).Rewrite("Yossi Gil","2016-08"))
 
 
+    def test_docComment_real_rav(self):
+        str4 = "/** An expander to rename short or unnecessarily understandable variable names"
+        str = "* in a method dec to more common or intuitive names (s.e i for an integer"
+        str2 = "* variable and ret for a return variable) : <code>"
+        str3 = "* Important - the $ will always change to ret by convention"
+        str5 = "* @author Raviv Rachmiel <tt> raviv.rachmiel@gmail.com </tt>"
+        str6 = "* @since 2017-01-10 Issue #979, {@link Issue0979} */"
+        str7 = "// TODO: take care of single var decleration, tests"
+        str8 = "public class RenameShortNamesMethodDec extends EagerTipper<MethodDeclaration>"
+        self.assertEqual(False,
+                         JavaDocComment([str4,str, str2, str3, str5, str6,str7,str8]).NeedsChange())
+        #print( JavaDocComment([str4,str, str2, str3, str5, str6,str7,str8]).Rewrite("Yossi Gil","2016-08"))
+
+
 if __name__ == '__main__':
     unittest.main()

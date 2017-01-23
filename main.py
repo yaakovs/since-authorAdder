@@ -32,10 +32,11 @@ def getCommitInfo(path,filePath):
     returns the Author and Date of the file - when was it created first and by who, according to the
     commit in which it was created
     '''
+    print("HEY")
     PIPE = subprocess.PIPE
     process = subprocess.Popen(['git', 'log', '--diff-filter=A', '--summary', filePath], stdout=PIPE, stderr=PIPE, cwd=path)
     stdoutput, stderroutput = process.communicate()
-
+    print("BYE")
     if ('fatal' in stdoutput) or (stderroutput != ''):
         # Handle error case
         print("Error")
@@ -43,6 +44,8 @@ def getCommitInfo(path,filePath):
         # Success
         author = ""
         since = ""
+        print(stdoutput)
+        print(stderroutput)
         for line in stdoutput.split("\n"):
             if ("Date:" in line):
                 FullDate = line.split("Date:")[1].split(" ")
@@ -81,13 +84,17 @@ def ChangeFile(path, filePath):
     for a list of supported pl's check __this__ out
     '''
 
+    print("Hello4")
     f = open(filePath, "r")
     contents = f.readlines()
     f.close()
 
+    print("Hello2")
     DocComm = GetSuitableDocComm(filePath,contents)
+    print("Hello3")
     if(not DocComm.NeedsChange()):
         return
+    print("Hello")
     Author, Date = getCommitInfo(path,filePath)
     contents = DocComm.ReturnEditedFile(Author,Date)
     if(not contents):
@@ -107,6 +114,7 @@ def main():
     for root, subdirs, files in os.walk(path):
         #iiterate on files
         for filename in files:
+            print(filename)
             file_path = os.path.join(root, filename)
             ChangeFile(path, file_path)
 
