@@ -11,8 +11,10 @@ For now - works only for java projects
 adds @since and @author to projects
 
 USAGE:
-python main.py PATH_TO_GIT_PROJECT
---or--
+first check that you have the git api by using "import git" in a python terminal
+if you don't have it install, use pip3 install gitpython (or by manually installing)
+
+
 python3 main.py PATH_TO_GIT_PROJECT
 
 

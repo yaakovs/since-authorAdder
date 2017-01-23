@@ -29,6 +29,32 @@ class JavaDocComment(DocComment):
     def getDocComment(self):
         '''
         @:returns the docComment as a string, or None if such doesnt exist
+        we want to get the last jdoc comment that comes before the first class/interface:
+        assuming each file has the word class or interface:
+            - get all that comes before the first class/inrterface
+            - get all that comes after the last '/**' from what we sliced earlier
+            - get all that comes until the first '*/'
+        '''
+        TillClassInter = re.split("class|interface","".join(self.FileLines))[0]
+        if (TillClassInter == "".join(self.FileLines)):
+            # no class and interface
+            return None
+        FromComm = TillClassInter.split("/**")[-1]
+        if(FromComm == TillClassInter):
+            #no jdoc
+            return None
+        self.docComment = FromComm.split("*/")[0]
+        if(self.docComment==FromComm):
+            self.docComment = None
+            return None
+        self.docComment = "/**" + self.docComment + "*/"
+        return self.docComment
+
+
+
+    def getDocComment3(self):
+        '''
+        @:returns the docComment as a string, or None if such doesnt exist
         '''
         try:
             TillClass = "\n".join(self.FileLines).split("class")[0]
@@ -39,10 +65,18 @@ class JavaDocComment(DocComment):
                     #also no interface
                     return None
                 FromComm = TillInterface.split("/**")[-1:]
+                if(FromComm == TillInterface):
+                    #has interface but no comment before
+                    return None
             else:
                 if(TillClass.split("interface")[0] != TillClass):
+                    #also has interface
                     FromComm = TillClass.split("interface")[0].split("/**")[-1:]
+                    if FromComm ==TillClass.split("interface")[0]:
+                        # has interface but no comment before
+                        return None
                 else:
+                    #has class
                     FromComm = TillClass.split("/**")[-1:]
             if (FromComm[0] == TillClass):
                 return None
@@ -73,7 +107,7 @@ class JavaDocComment(DocComment):
         try:
             docBlock = self.getDocComment().split("\n")
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res = "".join(filter(lambda line: "@author" in line, docBlock))
+            res = "".join(map(lambda line: line + "\n", filter(lambda line: "@author" in line, docBlock)))
             if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
                 return None
             return res
