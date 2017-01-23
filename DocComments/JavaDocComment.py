@@ -14,7 +14,7 @@ class JavaDocComment(DocComment):
     a father class for getting the edited code file (with since, author and TODO)
     """
     #JavaDocRegex = r'/\*\*([^/\*]*?)\*/[^*/]* class'
-    JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^*/]|[\n])))*\*+/)[^*/]* (Class|class|Interface|interface)+'
+    JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^\*/]|[\n])))*\*+/)[^\*/]*[//]* (Class|class|Interface|interface)+'
 
     def getDocComment(self):
         '''
@@ -57,6 +57,7 @@ class JavaDocComment(DocComment):
                 return None
             return res
         except:
+            print("AUTH2")
             return None
 
     def getSinceFromComment(self):
@@ -113,7 +114,7 @@ class JavaDocComment(DocComment):
             retList = []
             found = False
             for line in self.FileLines:
-                if "class" in line and found == False:
+                if ("class" or "interface") in line and found == False:
                     retList.append(newDocComment)
                     found = True
                 retList.append(line)
