@@ -9,7 +9,9 @@ import re
 
 
 class JavaDocComment(DocComment):
-
+    def __init__(self, FileLines):
+        self.FileLines = FileLines
+        self.getDocComment()
     """
     a father class for getting the edited code file (with since, author and TODO)
     """
@@ -35,6 +37,8 @@ class JavaDocComment(DocComment):
             - get all that comes after the last '/**' from what we sliced earlier
             - get all that comes until the first '*/'
         '''
+        self.docComment = None
+        self.docLines = None
         TillClassInter = re.split("class|interface","".join(self.FileLines))[0]
         if (TillClassInter == "".join(self.FileLines)):
             # no class and interface
@@ -45,56 +49,20 @@ class JavaDocComment(DocComment):
             return None
         self.docComment = FromComm.split("*/")[0]
         if(self.docComment==FromComm):
-            self.docComment = None
             return None
+        self.docLines = self.docComment.split("\n")
+        self.docLines = list(map(lambda line: line + "\n", self.docLines))
         self.docComment = "/**" + self.docComment + "*/"
         return self.docComment
-
-
-
-    def getDocComment3(self):
-        '''
-        @:returns the docComment as a string, or None if such doesnt exist
-        '''
-        try:
-            TillClass = "\n".join(self.FileLines).split("class")[0]
-            if (TillClass == "\n".join(self.FileLines)):
-                #no class
-                TillInterface = "\n".join(self.FileLines).split("interface")[0]
-                if (TillInterface == "\n".join(self.FileLines)):
-                    #also no interface
-                    return None
-                FromComm = TillInterface.split("/**")[-1:]
-                if(FromComm == TillInterface):
-                    #has interface but no comment before
-                    return None
-            else:
-                if(TillClass.split("interface")[0] != TillClass):
-                    #also has interface
-                    FromComm = TillClass.split("interface")[0].split("/**")[-1:]
-                    if FromComm ==TillClass.split("interface")[0]:
-                        # has interface but no comment before
-                        return None
-                else:
-                    #has class
-                    FromComm = TillClass.split("/**")[-1:]
-            if (FromComm[0] == TillClass):
-                return None
-            return "/**" + FromComm[0].split("*/")[0] + "*/"
-        except:
-            return None
 
     def getDescFromComment(self):
         '''
         @:returns: the description of the class, if there isn't any returns None
         '''
         try:
-            docBlock = self.getDocComment().split("\n")
-            docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res =  "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
-                                 docBlock))
-
-            if(res== '' or res == ' ' or res == '\n'): #TODO: do it better
+            res = "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
+                                 self.docLines))
+            if not res:
                 return None
             return res
         except:
@@ -105,10 +73,8 @@ class JavaDocComment(DocComment):
         @:returns: the author of the class, if there isn't any returns None
         '''
         try:
-            docBlock = self.getDocComment().split("\n")
-            docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res = "".join(map(lambda line: line + "\n", filter(lambda line: "@author" in line, docBlock)))
-            if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
+            res = "".join(filter(lambda line: "@author" in line, self.docLines))
+            if not res:
                 return None
             return res
         except:
@@ -119,10 +85,8 @@ class JavaDocComment(DocComment):
         @:returns: the since of the class, if there isn't any returns None
         '''
         try:
-            docBlock = self.getDocComment().split("\n")
-            docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
-            res = "".join(filter(lambda line: "@since" in line, docBlock))
-            if (res == '' or res == ' ' or res == '\n'):  # TODO: do it better
+            res = "".join(filter(lambda line: "@since" in line, self.docLines))
+            if not res:
                 return None
             return res
         except:
@@ -162,7 +126,7 @@ class JavaDocComment(DocComment):
         newDocComment += " */\n"
 
         #if no java doc existed
-        if(not self.getDocComment()):
+        if not self.docComment:
             retList = []
             found = False
             for line in self.FileLines:
@@ -170,6 +134,6 @@ class JavaDocComment(DocComment):
                     retList.append(newDocComment)
                     found = True
                 retList.append(line)
-            return map(lambda line: line + "\n", "".join(retList).split("\n"))
-        res = "".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")
-        return map(lambda line: line + "\n", res)
+            return list(map(lambda line: line + "\n", "".join(retList).split("\n")))
+        res = "".join(self.FileLines).replace(self.docComment, newDocComment).split("\n")
+        return list(map(lambda line: line + "\n", res))
