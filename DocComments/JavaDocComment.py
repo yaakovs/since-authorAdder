@@ -9,51 +9,44 @@ import re
 
 
 class JavaDocComment(DocComment):
-    def __init__(self, FileLines):
-        self.FileLines = FileLines
-        self.getDocComment()
     """
     a father class for getting the edited code file (with since, author and TODO)
     """
-    #JavaDocRegex = r'/\*\*([^/\*]*?)\*/[^*/]* class'
-    JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^*/]|[\n])))*\*+/)[^*/]* (class|interface|Interface|Class)+'
+    def __init__(self, FileLines):
+        self.needsChange = False
+        self.FileLines = FileLines
+        self.docComment = None
+        self.docLines = None
+        self.initDocComment()
 
-    def getDocComment2(self):
-        '''
-        @:returns the docComment as a string, or None if such doesnt exist
-        '''
-        regexPattern = re.compile(self.JavaDocRegex, re.DOTALL)
-        try:
-            return regexPattern.findall("".join(self.FileLines))[0][0]
-        except:
-            return None
 
-    def getDocComment(self):
+
+    def initDocComment(self):
         '''
-        @:returns the docComment as a string, or None if such doesnt exist
+        @:inits: the docComment variable as a string, or None if such doesnt exist
         we want to get the last jdoc comment that comes before the first class/interface:
         assuming each file has the word class or interface:
             - get all that comes before the first class/inrterface
             - get all that comes after the last '/**' from what we sliced earlier
             - get all that comes until the first '*/'
         '''
-        self.docComment = None
-        self.docLines = None
         TillClassInter = re.split("class|interface","".join(self.FileLines))[0]
-        if (TillClassInter == "".join(self.FileLines)):
-            # no class and interface
-            return None
+        if TillClassInter == "".join(self.FileLines):
+            # no class and interface and enum
+            return
         FromComm = TillClassInter.split("/**")[-1]
-        if(FromComm == TillClassInter):
+        if FromComm == TillClassInter:
             #no jdoc
-            return None
+            self.needsChange = True
+            return
         self.docComment = FromComm.split("*/")[0]
         if(self.docComment==FromComm):
-            return None
+            #an error case
+            return
+        self.docComment = "/**" + self.docComment + "*/"
         self.docLines = self.docComment.split("\n")
         self.docLines = list(map(lambda line: line + "\n", self.docLines))
-        self.docComment = "/**" + self.docComment + "*/"
-        return self.docComment
+        self.needsChange = not self.getDescFromComment() or not self.getAuthorFromComment() or not self.getSinceFromComment()
 
     def getDescFromComment(self):
         '''
@@ -67,6 +60,9 @@ class JavaDocComment(DocComment):
             return res
         except:
             return None
+
+    def NeedsChange(self):
+        return self.needsChange
 
     def getAuthorFromComment(self):
         '''
@@ -92,13 +88,6 @@ class JavaDocComment(DocComment):
         except:
             return None
 
-    def NeedsChange(self):
-        '''
-        :return: True if needs change and False else
-        '''
-        return not self.getAuthorFromComment() or not self.getSinceFromComment() or not self.getDescFromComment()
-
-
     def Rewrite(self, Author, Date):
         '''
         @:returns a List of a suitable docComment
@@ -112,10 +101,10 @@ class JavaDocComment(DocComment):
 
         TODONote = "/** TODO: "
         TODONote += author.split("@author")[1] if author else Author
-        TODONote += " please add a description to your class\n"
+        TODONote += " please add a description \n" ##TODO: to your class
 
         if desc:
-            newDocComment = "/** " + desc + "\n"
+            newDocComment = "/** " + desc + "\n" ##TODO: remove the \n
         else:
             newDocComment = TODONote
         if author:
@@ -133,7 +122,7 @@ class JavaDocComment(DocComment):
             retList = []
             found = False
             for line in self.FileLines:
-                if "class" in line and found == False:
+                if "class" in line or "interface" in line and not found: ##TODO: or enum
                     retList.append(newDocComment)
                     found = True
                 retList.append(line)

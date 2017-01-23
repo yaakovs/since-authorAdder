@@ -19,7 +19,7 @@ class DocComment():
     '''
     @:returns the docComment as a string, or None if such doesnt exist
     '''
-    def getDocComment(self):
+    def initDocComment(self):
         return None
 
     def NeedsChange(self):

@@ -40,14 +40,18 @@ def getCommitInfo(path,filePath):
     author = ""
     since = ""
     print(filePath)
+    foundAuth = False
+    foundSince = False
     for line in log.split("\n"):
-        if ("Date:" in line):
+        if ("Date:" in line) and not foundSince:
             FullDate = line.split("Date:")[1].split(" ")
+            foundSince = True
             #The date formatting we chose
             offset = 3
             since += FullDate[1+offset] + " " + FullDate[2+offset] + ", " + FullDate[4+offset]
-        if ("Author:" in line):
+        if ("Author:" in line) and not foundAuth:
             author += line.split("Author:")[1]
+            foundAuth = True
     print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
     return author, since
 

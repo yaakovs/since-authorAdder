@@ -5,34 +5,34 @@ from DocComments.JavaDocComment import JavaDocComment
 
 class JavaDocCommentTest(unittest.TestCase):
     def test_getDocCommentNoDoc(self):
-        self.assertEqual(None, JavaDocComment(["abc\n", "efg\n", "hoj\n"]).getDocComment())
+        self.assertEqual(None, JavaDocComment(["abc\n", "efg\n", "hoj\n"]).initDocComment())
 
     def test_getDocComment1Doc(self):
-        self.assertEqual("/** hello\n world\n*/", JavaDocComment(["abc\n", "/** hello\n", " world\n","*/\n","public static class main()\n"]).getDocComment())
+        self.assertEqual("/** hello\n world\n*/", JavaDocComment(["abc\n", "/** hello\n", " world\n","*/\n","public static class main()\n"]).initDocComment())
 
     def test_getDocComment2Docs(self):
-        self.assertEqual("/** hello2\n world2\n*/", JavaDocComment(["/** hello\n", " world\n","*/\n", "efg\n","/** hello2\n", " world2\n","*/\n", "hoj\n","public static class main()\n"]).getDocComment())
+        self.assertEqual("/** hello2\n world2\n*/", JavaDocComment(["/** hello\n", " world\n","*/\n", "efg\n","/** hello2\n", " world2\n","*/\n", "hoj\n","public static class main()\n"]).initDocComment())
 
     def test_oneLineDoc(self):
         str = "/** hello world */ class"
-        self.assertEqual("/** hello world */", JavaDocComment([str]).getDocComment())
+        self.assertEqual("/** hello world */", JavaDocComment([str]).initDocComment())
 
     def test_oneLine2Docs(self):
         str = "/** hello world */ \n"
         str2 = "/** hello2 world2 */ class\n"
-        self.assertEqual("/** hello2 world2 */", JavaDocComment([str,str2]).getDocComment())
+        self.assertEqual("/** hello2 world2 */", JavaDocComment([str,str2]).initDocComment())
 
 
     def test_hasClassNoDoc(self):
         str = "/* hello world */ \n"
         str2 = "public static class\n"
-        self.assertEqual(None, JavaDocComment([str, str2]).getDocComment())
+        self.assertEqual(None, JavaDocComment([str, str2]).initDocComment())
 
 
     def test_noClassHasDoc(self):
         str = "/** hello world */ "
         str2 = "public static"
-        self.assertEqual(None, JavaDocComment([str, str2]).getDocComment())
+        self.assertEqual(None, JavaDocComment([str, str2]).initDocComment())
 
     def test_realCode(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -47,7 +47,7 @@ class JavaDocCommentTest(unittest.TestCase):
                          " * Functions named {@link #base} are non-recursive\n"
                          " * @author Yossi Gil\n"
                          " * @author Niv Shalmon\n"
-                         " * @since 2016-08 */", JavaDocComment([str, str2, str3, str4, str5, str6, str7]).getDocComment())
+                         " * @since 2016-08 */", JavaDocComment([str, str2, str3, str4, str5, str6, str7]).initDocComment())
 
     def test_realCode_getDesc(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
