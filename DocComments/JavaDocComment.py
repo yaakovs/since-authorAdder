@@ -40,7 +40,10 @@ class JavaDocComment(DocComment):
                     return None
                 FromComm = TillInterface.split("/**")[-1:]
             else:
-                FromComm = TillClass.split("/**")[-1:]
+                if(TillClass.split("interface")[0] != TillClass):
+                    FromComm = TillClass.split("interface")[0].split("/**")[-1:]
+                else:
+                    FromComm = TillClass.split("/**")[-1:]
             if (FromComm[0] == TillClass):
                 return None
             return "/**" + FromComm[0].split("*/")[0] + "*/"
@@ -56,6 +59,7 @@ class JavaDocComment(DocComment):
             docBlock = map(lambda line: re.sub(r'/\*\*|\*/', "", line), docBlock)
             res =  "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
                                  docBlock))
+
             if(res== '' or res == ' ' or res == '\n'): #TODO: do it better
                 return None
             return res
