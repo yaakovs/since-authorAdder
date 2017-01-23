@@ -103,4 +103,14 @@ class JavaDocComment(DocComment):
             newDocComment += " * @since " + str(Date) + "\n"
         newDocComment += " */"
 
+        #if no java doc existed
+        if(not self.getDocComment()):
+            retList = []
+            found = False
+            for line in self.FileLines:
+                if "class" in line and found == False:
+                    retList.append(newDocComment)
+                    found = True
+                retList.append(line)
+            return "\n".join(retList).split("\n")
         return "\n".join(self.FileLines).replace(self.getDocComment(), newDocComment).split("\n")

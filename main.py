@@ -47,7 +47,8 @@ def getCommitInfo(path,filePath):
             if ("Date:" in line):
                 FullDate = line.split("Date:")[1].split(" ")
                 #The date formatting we chose
-                since += FullDate[1] + " " + FullDate[2] + ", " + FullDate[4]
+                offset = 3
+                since += FullDate[1+offset] + " " + FullDate[2+offset] + ", " + FullDate[4+offset]
             if ("Author:" in line):
                 author += line.split("Author:")[1]
         print("NEED AUTH OR SINCE IN " + filePath + " AND DETAILS ARE - " + author + ", " + since)
@@ -89,10 +90,11 @@ def ChangeFile(path, filePath):
         return
     Author, Date = getCommitInfo(path,filePath)
     contents = DocComm.ReturnEditedFile(Author,Date)
-
+    if(not contents):
+        return
     f = open(filePath, "w")
-    contents = "".join(contents)
-    f.write(contents)
+    contents2 = "\n".join(contents) #I SUSPECT SOMETHING HERE IS WRONg, also the class regex is not good
+    f.write(contents2)
     f.close()
 
 

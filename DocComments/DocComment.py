@@ -59,5 +59,5 @@ class DocComment():
     def ReturnEditedFile(self, Author, Date):
         if(not self.NeedsChange()):
             return None
-        return self.Rewrite()
+        return self.Rewrite(Author,Date)
 
