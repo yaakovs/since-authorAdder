@@ -16,7 +16,7 @@ class JavaDocComment(DocComment):
     #JavaDocRegex = r'/\*\*([^/\*]*?)\*/[^*/]* class'
     JavaDocRegex = r'(/\*\*([^*]|[\n]|(\*+([^*/]|[\n])))*\*+/)[^*/]* (class|interface|Interface|Class)+'
 
-    def getDocComment(self):
+    def getDocComment2(self):
         '''
         @:returns the docComment as a string, or None if such doesnt exist
         '''
@@ -26,6 +26,26 @@ class JavaDocComment(DocComment):
         except:
             return None
 
+    def getDocComment(self):
+        '''
+        @:returns the docComment as a string, or None if such doesnt exist
+        '''
+        try:
+            TillClass = "\n".join(self.FileLines).split("class")[0]
+            if (TillClass == "\n".join(self.FileLines)):
+                #no class
+                TillInterface = "\n".join(self.FileLines).split("interface")[0]
+                if (TillInterface == "\n".join(self.FileLines)):
+                    #also no interface
+                    return None
+                FromComm = TillInterface.split("/**")[-1:]
+            else:
+                FromComm = TillClass.split("/**")[-1:]
+            if (FromComm[0] == TillClass):
+                return None
+            return "/**" + FromComm[0].split("*/")[0] + "*/"
+        except:
+            return None
 
     def getDescFromComment(self):
         '''

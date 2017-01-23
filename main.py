@@ -81,6 +81,7 @@ def ChangeFile(path, filePath):
 
     DocComm = GetSuitableDocComm(filePath,contents)
     if not DocComm.NeedsChange():
+        print("ENTERED")
         return
     Author, Date = getCommitInfo(path,filePath)
     contents = DocComm.ReturnEditedFile(Author,Date)
