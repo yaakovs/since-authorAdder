@@ -30,7 +30,7 @@ class JavaDocComment(DocComment):
             - get all that comes after the last '/**' from what we sliced earlier
             - get all that comes until the first '*/'
         '''
-        TillClassInter = re.split("class|interface","".join(self.FileLines))[0]
+        TillClassInter = re.split(" class | interface | enum | annotation ","".join(self.FileLines))[0]
         if TillClassInter == "".join(self.FileLines):
             # no class and interface and enum
             return
@@ -62,8 +62,6 @@ class JavaDocComment(DocComment):
         except:
             return None
 
-    def NeedsChange(self):
-        return self.needsChange
 
     def getAuthorFromComment(self):
         '''
@@ -89,6 +87,9 @@ class JavaDocComment(DocComment):
         except:
             return None
 
+    def NeedsChange(self):
+        return self.needsChange
+
     def Rewrite(self, Author, Date):
         '''
         @:returns a List of a suitable docComment
@@ -105,7 +106,7 @@ class JavaDocComment(DocComment):
         TODONote += " please add a description \n" ##TODO: to your class
 
         if desc:
-            newDocComment = "/** " + desc + "\n" ##TODO: remove the \n
+            newDocComment = "/** " + desc
         else:
             newDocComment = TODONote
         if author:
@@ -123,7 +124,7 @@ class JavaDocComment(DocComment):
             retList = []
             found = False
             for line in self.FileLines:
-                if "class" in line or "interface" in line and not found: ##TODO: or enum
+                if (" class " in line or " interface " in line or " enum " in line or " annotation ") and not found: ##TODO: or enum
                     retList.append(newDocComment)
                     found = True
                 retList.append(line)
