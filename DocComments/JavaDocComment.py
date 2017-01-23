@@ -45,7 +45,8 @@ class JavaDocComment(DocComment):
             return
         self.docComment = "/**" + self.docComment + "*/"
         self.docLines = self.docComment.split("\n")
-        self.docLines = list(map(lambda line: line + "\n", self.docLines))
+        self.docLines = map(lambda line: line + "\n", self.docLines)
+        self.docLines = list(map(lambda line: re.sub(r'/\*\*|\*/', "", line), self.docLines))
         self.needsChange = not self.getDescFromComment() or not self.getAuthorFromComment() or not self.getSinceFromComment()
 
     def getDescFromComment(self):
