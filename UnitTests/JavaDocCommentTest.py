@@ -7,7 +7,7 @@ class JavaDocCommentTest(unittest.TestCase):
     def test_getDocCommentNoDoc(self):
         jdc = JavaDocComment(["abc\n", "efg\n", "hoj\n"])
         jdc.init_doc_comment()
-        self.assertEqual(None, jdc.DocComment)
+        self.assertIsNone(jdc.DocComment)
 
     def test_getDocComment1Doc(self):
         jdc = JavaDocComment(["abc\n", "/** hello\n", " world\n","*/\n","public static class main()\n"])
@@ -39,7 +39,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str2 = "public static class\n"
         jdc = JavaDocComment([str, str2])
         jdc.init_doc_comment()
-        self.assertEqual(None,jdc.DocComment)
+        self.assertIsNone(jdc.DocComment)
 
 
     def test_noClassHasDoc(self):
@@ -47,7 +47,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str2 = "public static"
         jdc = JavaDocComment([str, str2])
         jdc.init_doc_comment()
-        self.assertEqual(None,jdc.DocComment)
+        self.assertIsNone(jdc.DocComment)
 
     def test_realCode(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -87,8 +87,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str5 = " * @author Niv Shalmon"
         str6 = " * @since 2016-08 */"
         str7 = "public static class"
-        self.assertEqual(None,
-                         JavaDocComment([str, str4, str5, str6, str7]).get_desc_from_comment())
+        self.assertIsNone(JavaDocComment([str, str4, str5, str6, str7]).get_desc_from_comment())
 
     def test_realCode_getAuth(self):
         str = "/** Expands terms of * or / expressions without reordering.\n"
@@ -101,8 +100,7 @@ class JavaDocCommentTest(unittest.TestCase):
         jdc = JavaDocComment([str, str2, str3, str4, str5, str6, str7])
         jdc.init_doc_comment()
         self.assertEqual(" * @author Yossi Gil\n"
-                         " * @author Niv Shalmon\n",
-                         jdc.get_author_from_comment())
+                         " * @author Niv Shalmon\n", jdc.get_author_from_comment())
 
     def test_realCode_getAuth_None(self):
         str = "/** Expands terms of * or / expressions without reordering. "
@@ -112,8 +110,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str7 = "public static class"
         jdc = JavaDocComment([str, str2, str3, str6, str7])
         jdc.init_doc_comment()
-        self.assertEqual(None,
-                         jdc.get_author_from_comment())
+        self.assertIsNone(jdc.get_author_from_comment())
 
     def test_realCode_getAuth_SameLine(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -137,8 +134,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str7 = "public static class "
         jdc = JavaDocComment([str, str2, str3, str4, str5, str6, str7])
         jdc.init_doc_comment()
-        self.assertEqual(" * @since 2016-08 \n",
-                         jdc.get_since_from_comment())
+        self.assertEqual(" * @since 2016-08 \n", jdc.get_since_from_comment())
 
 
     '''
@@ -158,8 +154,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str3 = " * Functions named {@link #base} are non-recursive"
         str4 = " * @author Yossi Gil */ "
         str7 = "public static class"
-        self.assertEqual(None,
-                         JavaDocComment([str, str2, str3, str4, str7]).get_since_from_comment())
+        self.assertIsNone(JavaDocComment([str, str2, str3, str4, str7]).get_since_from_comment())
 
     def test_doesnt_need_change(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -169,8 +164,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str5 = " * @author Niv Shalmon\n"
         str6 = " * @since 2016-08 */\n"
         str7 = "public static class\n"
-        self.assertEqual(False,
-                         JavaDocComment([str, str2, str3, str4, str5, str6, str7]).needs_change())
+        self.assertFalse(JavaDocComment([str, str2, str3, str4, str5, str6, str7]).needs_change())
 
     def test_need_change_since(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -181,7 +175,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str7 = "public static class \n"
         jdc = JavaDocComment([str, str2, str3, str4, str5, str7])
         jdc.init_doc_comment()
-        self.assertEqual(True, jdc.needs_change())
+        self.assertTrue(jdc.needs_change())
 
     def test_realCode_rewrite_no_change(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"
@@ -202,14 +196,14 @@ class JavaDocCommentTest(unittest.TestCase):
         str7 = "public static class \n"
         jdc = JavaDocComment([str, str2, str3, str6, str7])
         jdc.init_doc_comment()
-        self.assertEqual(["/**  Expands terms of * or / expressions without reordering.\n",
-                         " * <p>\n",
-                         " * Functions named {@link #base} are non-recursive\n",
-                         " * @author Yossi Gil\n",
-                         " * @since 2016-08\n",
-                          " */\n",
-                          "\n",
-                          "public static class \n","\n"], jdc.rewrite("Yossi Gil","2016-08"))
+        self.assertEqual("/**  Expands terms of * or / expressions without reordering.\n"
+                         " * <p>\n"
+                         " * Functions named {@link #base} are non-recursive\n"
+                         " * @author Yossi Gil\n"
+                         " * @since 2016-08\n"
+                          " */\n"
+                          "\n"
+                          "public static class \n", jdc.rewrite("Yossi Gil", "2016-08"))
 
 
     def test_docComment_real_rav(self):
@@ -221,9 +215,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str6 = "* @since 2017-01-10 Issue #979, {@link Issue0979} */\n"
         str7 = "// TODO: take care of single var decleration, tests\n"
         str8 = "public class RenameShortNamesMethodDec extends EagerTipper<MethodDeclaration>\n"
-        self.assertEqual(False,
-                         JavaDocComment([str4,str, str2, str3, str5, str6,str7,str8]).needs_change())
-        #print( JavaDocComment([str4,str, str2, str3, str5, str6,str7,str8]).Rewrite("Yossi Gil","2016-08"))
+        self.assertFalse(JavaDocComment([str4,str, str2, str3, str5, str6,str7,str8]).needs_change())
 
 
 if __name__ == '__main__':
