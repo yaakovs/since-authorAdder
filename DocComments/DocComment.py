@@ -48,7 +48,7 @@ class DocComment():
 
     def rewrite(self, author, date):
         """
-        @:returns a List of edited code lines
+        @:returns a string of edited code file
         """
         return None
 
