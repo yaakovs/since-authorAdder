@@ -23,7 +23,7 @@ class JavaDocComment(DocComment):
 
     def init_doc_comment(self):
         '''
-        @:inits the docComment variable as a string, or None if such doesnt exist
+        @:inits the DocComment variable as a string, or None if such doesnt exist
         we want to get the last jdoc comment that comes before the first class/interface:
         assuming each file has the word class or interface:
             - get all that comes before the first class/inrterface
@@ -39,14 +39,14 @@ class JavaDocComment(DocComment):
             #no java doc
             self.NeedsChange = True
             return
-        self.docComment = FromComment.split("*/")[0]
-        if self.docComment == FromComment:
+        self.DocComment = FromComment.split("*/")[0]
+        if self.DocComment == FromComment:
             #some error case
             return
-        self.docComment = "/**" + self.docComment + "*/"
-        self.docLines = self.docComment.split("\n")
-        self.docLines = list(map(lambda line: line + "\n", self.docLines))
-        self.docLines = list(map(lambda line: re.sub(r'/\*\*|\*/', "", line), self.docLines))
+        self.DocComment = "/**" + self.DocComment + "*/"
+        self.DocLines = self.DocComment.split("\n")
+        self.DocLines = list(map(lambda line: line + "\n", self.DocLines))
+        self.DocLines = list(map(lambda line: re.sub(r'/\*\*|\*/', "", line), self.DocLines))
         self.NeedsChange = not self.get_desc_from_comment() or not self.get_author_from_comment() or not self.get_since_from_comment()
 
     def get_desc_from_comment(self):
@@ -55,7 +55,7 @@ class JavaDocComment(DocComment):
         '''
         try:
             res = "".join(filter(lambda line: "@author" not in line and "@since" not in line and re.search('[a-zA-Z]', line),
-                                 self.docLines))
+                                 self.DocLines))
             return res if res else None
         except:
             return None
@@ -66,7 +66,7 @@ class JavaDocComment(DocComment):
         @:returns: the author of the class, if there isn't any returns None
         '''
         try:
-            res = "".join(filter(lambda line: "@author" in line, self.docLines))
+            res = "".join(filter(lambda line: "@author" in line, self.DocLines))
             return res if res else None
         except:
             return None
@@ -76,7 +76,7 @@ class JavaDocComment(DocComment):
         @:returns: the since of the class, if there isn't any returns None
         '''
         try:
-            res = "".join(filter(lambda line: "@since" in line, self.docLines))
+            res = "".join(filter(lambda line: "@since" in line, self.DocLines))
             return res if res else None
         except:
             return None
@@ -106,7 +106,7 @@ class JavaDocComment(DocComment):
         newDocComment += " */\n"
 
         #if no java doc existed
-        if not self.docComment:
+        if not self.DocComment:
             LinesToRet = []
             found = False
             for line in self.FileLines:
@@ -116,5 +116,5 @@ class JavaDocComment(DocComment):
                 LinesToRet.append(line)
             return list(map(lambda line: line + "\n", "".join(LinesToRet).split("\n")))
 
-        res = "".join(self.FileLines).replace(self.docComment, newDocComment).split("\n")
+        res = "".join(self.FileLines).replace(self.DocComment, newDocComment).split("\n")
         return list(map(lambda line: line + "\n", res))

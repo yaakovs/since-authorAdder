@@ -39,7 +39,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str2 = "public static class\n"
         jdc = JavaDocComment([str, str2])
         jdc.init_doc_comment()
-        self.assertEqual(None,jdc.docComment)
+        self.assertEqual(None,jdc.DocComment)
 
 
     def test_noClassHasDoc(self):
@@ -47,7 +47,7 @@ class JavaDocCommentTest(unittest.TestCase):
         str2 = "public static"
         jdc = JavaDocComment([str, str2])
         jdc.init_doc_comment()
-        self.assertEqual(None,jdc.docComment)
+        self.assertEqual(None,jdc.DocComment)
 
     def test_realCode(self):
         str = "/** Expands terms of * or / expressions without reordering. \n"

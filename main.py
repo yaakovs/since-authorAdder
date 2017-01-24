@@ -61,8 +61,8 @@ def get_suitable_doc_comment(filePath, fileLines):
     :return: a DocComm
     the suitable DocComm for the code file if such exists
     '''
-    fileEnding = filePath.split(".")[-1:]
-    if re.match("java", fileEnding, re.IGNORECASE):
+    fileEnding = filePath.split(".")[-1]
+    if fileEnding and re.match("java", fileEnding, re.IGNORECASE):
         return JavaDocComment(fileLines)
     return DocComment(fileLines)
 
