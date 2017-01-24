@@ -12,9 +12,9 @@ class JavaDocComment(DocComment):
     """
     a class for getting java code file (with since, author and TODO)
     """
-    def __init__(self, FileLines):
+    def __init__(self, file_lines):
         self.NeedsChange = False
-        self.FileLines = FileLines
+        self.FileLines = file_lines
         self.DocComment = None
         self.DocLines = None
         self.init_doc_comment()
