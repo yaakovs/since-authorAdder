@@ -1,6 +1,6 @@
 import unittest
 
-from DocComments.JavaDocComment import JavaDocComment
+from src.JavaDocComment import JavaDocComment
 
 
 class JavaDocCommentTest(unittest.TestCase):

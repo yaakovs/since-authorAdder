@@ -4,7 +4,7 @@
 @since Jan 16, 2017
 """
 
-from DocComments.DocComment import DocComment
+from src.DocComment import DocComment
 import re
 
 

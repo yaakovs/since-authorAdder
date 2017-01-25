@@ -20,8 +20,8 @@ import tempfile
 import git
 import shutil
 
-from DocComments.DocComment import DocComment
-from DocComments.JavaDocComment import JavaDocComment
+from src.DocComment import DocComment
+from src.JavaDocComment import JavaDocComment
 
 
 def get_commit_info(path, file_path):
@@ -90,10 +90,16 @@ def change_file(path, file_path):
 
 
 def github_plugin(repo_name, author, mail):
+    """
+    :param repo_name: github repo url
+    :param author: the author of the commit
+    :param mail: the mail of the author of the commit
+    :return: None
+    """
     tmp_dir = tempfile.mkdtemp()
     print("a temp dir has been created: " + tmp_dir)
     if not tmp_dir:
-        print("error occurred in creating temp dir for cloning the repository")
+        print("Error - occurred in creating temp dir for cloning the repository")
         return
     repo = git.Repo.clone_from(repo_name, tmp_dir)
     dir_walk(tmp_dir)
@@ -103,11 +109,19 @@ def github_plugin(repo_name, author, mail):
         author = git.Actor(author, mail)
         index.commit("since&author adding", author=author, committer=author)
         origin = repo.remote()
-        origin.push()
+        try:
+            origin.push()
+            print("Git pushed successfully to github repo")
+        except Exception as e:
+            print (str(e))
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
 def dir_walk(path):
+    """
+    :param path: gets the abs path and iterates on all files on it - for each file
+    operates the change_file function
+    """
     for root, subdirs, files in os.walk(path):
         # iterate on files
         for filename in files:
