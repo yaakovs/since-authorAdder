@@ -4,7 +4,7 @@ Written originally by:
 
 Raviv Rachmiel <ravivra@campus.technion.ac.il>
 
-Yaakov Sokolik <yaakovs@gcampus.technion.ac.il>
+Yaakov Sokolik <yaakovs@campus.technion.ac.il>
 
 ##Working with the program:
 ### Working on a local repository:
