@@ -19,7 +19,7 @@ At the end, it will delete the temp folder it cloned
 ##Usage:
 ###For a local git repo:
     python3 main.py <local git repo path>
-###for a Github:
+###for a Github repo:
     python3 main.py <github repo URL> <user.name> <user.mail>
 * the user.name has to be either 1 word, or a couple of words wrapped by ""
 * the <user.name> and <user.mail> are for the commit info
@@ -27,13 +27,18 @@ At the end, it will delete the temp folder it cloned
 
 ###Dependencies:
 We use:
+
 python3
+
 gitpython library:
+
     pip3 install gitpython
 
 ###Works for:
-    - Java
-    
+- Java
+
+
+
 Enjoy :)
 
 
