@@ -202,7 +202,6 @@ class JavaDocCommentTest(unittest.TestCase):
                          " * @author Yossi Gil\n"
                          " * @since 2016-08\n"
                           " */\n"
-                          "\n"
                           "public static class \n", jdc.rewrite("Yossi Gil", "2016-08"))
 
 

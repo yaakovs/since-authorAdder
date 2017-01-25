@@ -30,6 +30,7 @@ class JavaDocComment(DocComment):
             - get all that comes after the last '/**' from what we sliced earlier
             - get all that comes until the first '*/'
         """
+
         before_define = re.split(self.JavaDefines, "".join(self.FileLines))[0]
         if before_define == "".join(self.FileLines):
             # no class and interface and enum
@@ -111,7 +112,7 @@ class JavaDocComment(DocComment):
             lines_to_return = []
             found = False
             for line in self.FileLines:
-                if (re.match(".*[" + self.JavaDefines + "]", line)) and not found:
+                if (" class " in line or " interface " in line or " enum " in line or " annotation " in line) and not found:
                     lines_to_return.extend(list(map(lambda line: line + "\n", new_doc_comment.split("\n"))))
                     found = True
                 lines_to_return.append(line)

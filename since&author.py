@@ -93,7 +93,7 @@ def github_plugin(repo_name, author, mail):
     tmp_dir = tempfile.mkdtemp()
     print("a temp dir has been created: " + tmp_dir)
     if not tmp_dir:
-        print("error occurred in creating dir for cloning the repository", file=sys.stderr)
+        print("error occurred in creating temp dir for cloning the repository")
         return
     repo = git.Repo.clone_from(repo_name, tmp_dir)
     dir_walk(tmp_dir)
