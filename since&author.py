@@ -1,6 +1,6 @@
 """
 For now - works only for java projects
-adds @since and @author to projects
+adds @since and @author and TODO note to files in repository
 
 USAGE:
 first check that you have the git api by using "import git" in a python terminal
