@@ -7,18 +7,19 @@ first check that you have the git api by using "import git" in a python terminal
 if you don't have it install, use pip3 install gitpython (or by manually installing)
 
 
-python3 main.py PATH_TO_GIT_PROJECT
+python3 since&author.py PATH_TO_GIT_PROJECT
+or:
+python3 since&author.py REPO_ADDRESS NAME EMAIL
 
-
-TODO:
-make as plugin
-make generic for more langs
-do something with the TODO if missing
 """
 import re
 import sys
 import os
+import tempfile
+
 import git
+import shutil
+
 from DocComments.DocComment import DocComment
 from DocComments.JavaDocComment import JavaDocComment
 
@@ -88,14 +89,39 @@ def change_file(path, file_path):
         f.write("".join(edited_content))
 
 
-def main():
-    path = str(sys.argv[1])
-    path = os.path.abspath(path)
+def github_plugin(repo_name, author, mail):
+    tmp_dir = tempfile.mkdtemp()
+    print("a temp dir has been created: " + tmp_dir)
+    if not tmp_dir:
+        print("error occurred in creating dir for cloning the repository", file=sys.stderr)
+        return
+    repo = git.Repo.clone_from(repo_name, tmp_dir)
+    dir_walk(tmp_dir)
+    if repo.is_dirty():
+        repo.git.add(update=True)
+        index = repo.index
+        author = git.Actor(author, mail)
+        index.commit("since&author adding", author=author, committer=author)
+        origin = repo.remote()
+        origin.push()
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def dir_walk(path):
     for root, subdirs, files in os.walk(path):
         # iterate on files
         for filename in files:
             file_path = os.path.join(root, filename)
             change_file(path, file_path)
+
+
+def main():
+    if len(sys.argv) == 4:
+        github_plugin(sys.argv[1], sys.argv[2], sys.argv[3])
+    else:
+        path = str(sys.argv[1])
+        path = os.path.abspath(path)
+        dir_walk(path)
 
 if __name__ == '__main__':
     main()

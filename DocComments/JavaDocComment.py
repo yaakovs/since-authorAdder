@@ -104,7 +104,7 @@ class JavaDocComment(DocComment):
         new_doc_comment = "/** " + desc if desc else todo_note
         new_doc_comment += author_from_comment if author_from_comment else " * @author " + author_form_git + "\n"
         new_doc_comment += since_from_comment if since_from_comment else " * @since " + date_form_git + "\n"
-        new_doc_comment += " */\n"
+        new_doc_comment += " */"
 
         # if no java doc existed
         if not self.DocComment:
