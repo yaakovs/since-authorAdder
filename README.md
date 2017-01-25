@@ -1,6 +1,10 @@
-# since-authorAdder
+# since-authorAdder[https://github.com/yaakovs/since-authorAdder]
 A GitHub plugin that adds since &amp; author and description notes to all code files that miss it in a project
-Written originally by Raviv Rachmiel <ravivra@campus.technion.ac.il> & Yaakov Sokolik <yaakovs@gcampus.technion.ac.il>
+Written originally by:
+
+Raviv Rachmiel <ravivra@campus.technion.ac.il>
+
+Yaakov Sokolik <yaakovs@gcampus.technion.ac.il>
 
 ##Working with the program:
 ### Working on a local repository:
