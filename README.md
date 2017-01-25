@@ -1,4 +1,4 @@
-# since-authorAdder[https://github.com/yaakovs/since-authorAdder]
+# since-authorAdder[[ttps://github.com/yaakovs/since-authorAdder]]
 A GitHub plugin that adds since &amp; author and description notes to all code files that miss it in a project
 Written originally by:
 
@@ -32,9 +32,9 @@ At the end, it will delete the temp folder it cloned
 ###Dependencies:
 We use:
 
-python3
+- python3
 
-gitpython library:
+- gitpython library:
 
     pip3 install gitpython
 
